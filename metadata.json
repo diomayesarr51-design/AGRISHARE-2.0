@@ -1,0 +1,7 @@
+{
+  "name": "Copy of OFFICIEL AGRISHARE",
+  "description": "Plateforme numérique intégrée connectant producteurs, consommateurs et investisseurs au Sénégal avec IA agricole.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
