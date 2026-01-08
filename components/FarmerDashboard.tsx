@@ -37,7 +37,6 @@ const MediaManager = ({ media, onChange }: { media: ProductImage[], onChange: (m
   const [analyzing, setAnalyzing] = useState(false);
 
   const handleUpload = () => {
-    // Simulation d'upload
     const newImage: ProductImage = {
       id: Date.now().toString(),
       url: `https://picsum.photos/400/300?random=${Math.random()}`,
@@ -77,16 +76,12 @@ const MediaManager = ({ media, onChange }: { media: ProductImage[], onChange: (m
         {media.map((img) => (
           <div key={img.id} className={`relative group rounded-lg overflow-hidden border-2 ${img.isPrimary ? 'border-agri-primary' : 'border-gray-200'}`}>
              <img src={img.url} className="w-full h-32 object-cover" />
-             
-             {/* Badges */}
              {img.isPrimary && <div className="absolute top-1 left-1 bg-agri-primary text-white text-[10px] font-bold px-1.5 py-0.5 rounded">Principal</div>}
              {img.aiScore && (
                <div className={`absolute top-1 right-1 text-[10px] font-bold px-1.5 py-0.5 rounded flex items-center gap-1 ${img.aiScore > 80 ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
                  <Sparkles size={8}/> IA: {img.aiScore}%
                </div>
              )}
-
-             {/* Actions Overlay */}
              <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-center items-center gap-2">
                 <div className="flex gap-2">
                    {!img.isPrimary && (
@@ -99,19 +94,16 @@ const MediaManager = ({ media, onChange }: { media: ProductImage[], onChange: (m
              </div>
           </div>
         ))}
-        
-        {/* Empty State / Upload Trigger */}
         <button type="button" onClick={handleUpload} className="h-32 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center text-gray-400 hover:border-agri-primary hover:text-agri-primary transition-colors">
            <Camera size={24} className="mb-2"/>
            <span className="text-xs font-bold">Ajouter Photo</span>
-           <span className="text-[10px]">ou Vidéo</span>
         </button>
       </div>
     </div>
   );
 };
 
-// Gestionnaire de Lots (Traçabilité)
+// Gestionnaire de Lots
 const BatchManager = ({ batches, onChange }: { batches: ProductBatch[], onChange: (b: ProductBatch[]) => void }) => {
   const addBatch = () => {
     const newBatch: ProductBatch = {
@@ -137,7 +129,6 @@ const BatchManager = ({ batches, onChange }: { batches: ProductBatch[], onChange
           <Plus size={12}/> Nouveau Lot
         </button>
       </div>
-
       <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
         <table className="w-full text-left text-xs">
           <thead className="bg-gray-50 border-b border-gray-200 text-gray-500 uppercase">
@@ -151,7 +142,7 @@ const BatchManager = ({ batches, onChange }: { batches: ProductBatch[], onChange
           </thead>
           <tbody>
              {batches.length === 0 ? (
-                <tr><td colSpan={5} className="p-4 text-center text-gray-400">Aucun lot enregistré. Le stock global est géré sans traçabilité.</td></tr>
+                <tr><td colSpan={5} className="p-4 text-center text-gray-400">Aucun lot enregistré.</td></tr>
              ) : (
                 batches.map(batch => (
                   <tr key={batch.id} className="border-b border-gray-100 last:border-0 hover:bg-gray-50">
@@ -173,15 +164,11 @@ const BatchManager = ({ batches, onChange }: { batches: ProductBatch[], onChange
           </tbody>
         </table>
       </div>
-      <div className="flex items-center gap-2 text-[10px] text-gray-400">
-         <Scan size={12}/> Scannez un QR code de lot pour mise à jour rapide (App Mobile)
-      </div>
     </div>
   );
 };
 
-
-// 1. Overview Tab (Tableau de Bord de Gestion)
+// 1. Overview Tab
 const OverviewTab = () => {
   const revenueData = [
     { name: 'Sem 1', revenu: 150000, depense: 80000 },
@@ -192,7 +179,6 @@ const OverviewTab = () => {
 
   return (
     <div className="space-y-6 animate-fadeIn">
-      {/* Weather & Alerts Widget */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 bg-gradient-to-br from-blue-600 to-blue-800 rounded-xl p-6 text-white shadow-lg relative overflow-hidden">
           <div className="relative z-10 flex justify-between items-start">
@@ -216,8 +202,6 @@ const OverviewTab = () => {
             <Sun size={64} className="text-yellow-400 animate-spin-slow opacity-90" />
           </div>
         </div>
-
-        {/* Alerts Box */}
         <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 flex flex-col justify-between">
            <div>
               <h3 className="font-bold text-gray-800 mb-4 flex items-center gap-2">
@@ -237,8 +221,6 @@ const OverviewTab = () => {
            </button>
         </div>
       </div>
-
-      {/* Financial Overview */}
       <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
         <div className="flex justify-between items-center mb-6">
           <h3 className="font-bold text-gray-800 text-lg">Performance Financière</h3>
@@ -270,7 +252,7 @@ const OverviewTab = () => {
   );
 };
 
-// 2. Production Tab (GESTION DES CULTURES)
+// 2. Production Tab
 const ProductionTab: React.FC<ProductionTabProps> = ({ crops, onAddCrop, onUpdateCrop, onHarvest }) => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [newCropName, setNewCropName] = useState('');
@@ -293,14 +275,13 @@ const ProductionTab: React.FC<ProductionTabProps> = ({ crops, onAddCrop, onUpdat
              <Plus size={18} /> Nouvelle Culture
           </button>
        </div>
-
        {showAddModal && (
          <div className="bg-white p-4 rounded-xl border border-green-200 shadow-lg mb-4 animate-slideUp">
             <h3 className="font-bold text-gray-800 mb-2">Ajouter une nouvelle culture</h3>
             <div className="flex gap-2">
               <input 
                 type="text" 
-                placeholder="Nom de la culture (ex: Carottes Zone B)" 
+                placeholder="Nom de la culture" 
                 className="flex-1 p-2 border border-gray-300 rounded-lg"
                 value={newCropName}
                 onChange={(e) => setNewCropName(e.target.value)}
@@ -310,7 +291,6 @@ const ProductionTab: React.FC<ProductionTabProps> = ({ crops, onAddCrop, onUpdat
             </div>
          </div>
        )}
-
        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {crops.map((crop) => (
              <div key={crop.id} className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden hover:shadow-md transition-shadow">
@@ -331,7 +311,6 @@ const ProductionTab: React.FC<ProductionTabProps> = ({ crops, onAddCrop, onUpdat
                       {crop.health}
                    </span>
                 </div>
-                
                 <div className="p-5 space-y-4">
                    <div>
                       <div className="flex justify-between text-sm mb-1">
@@ -342,7 +321,6 @@ const ProductionTab: React.FC<ProductionTabProps> = ({ crops, onAddCrop, onUpdat
                          <div className="bg-agri-primary h-2 rounded-full transition-all duration-500" style={{width: `${crop.progress}%`}}></div>
                       </div>
                    </div>
-
                    <div className="flex justify-between items-center pt-2 gap-2">
                       <button 
                         onClick={() => onUpdateCrop(crop.id, { progress: Math.min(100, crop.progress + 10) })}
@@ -350,13 +328,10 @@ const ProductionTab: React.FC<ProductionTabProps> = ({ crops, onAddCrop, onUpdat
                       >
                          Mettre à jour
                       </button>
-                      
                       <button 
                         onClick={() => onHarvest(crop.id)}
                         className={`flex-1 text-xs px-3 py-2 rounded-lg font-bold transition-colors ${
-                          crop.stage === 'Récolte' 
-                          ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
-                          : 'bg-green-600 text-white hover:bg-green-700'
+                          crop.stage === 'Récolte' ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-green-600 text-white hover:bg-green-700'
                         }`}
                         disabled={crop.stage === 'Récolte'}
                       >
@@ -375,12 +350,10 @@ const ProductionTab: React.FC<ProductionTabProps> = ({ crops, onAddCrop, onUpdat
   );
 };
 
-// 3. CATALOG & STOCK TAB
+// 3. Catalog & Stock Tab
 const CatalogTab: React.FC<CatalogTabProps> = ({ products, setProducts }) => {
   const [view, setView] = useState<'dashboard' | 'list' | 'form'>('dashboard');
   const [editingId, setEditingId] = useState<string | null>(null);
-
-  // --- SUB-VIEWS ---
 
   const StockDashboard = () => (
     <div className="space-y-6">
@@ -414,7 +387,6 @@ const CatalogTab: React.FC<CatalogTabProps> = ({ products, setProducts }) => {
             <div className="p-3 bg-purple-50 text-purple-600 rounded-full"><History size={24}/></div>
          </div>
       </div>
-
       <div className="flex gap-4">
          <button onClick={() => setView('list')} className="flex-1 bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:border-agri-primary hover:shadow-md transition-all text-left group">
             <h3 className="font-bold text-lg text-gray-800 group-hover:text-agri-primary mb-2 flex items-center gap-2"><Layers size={20}/> Gérer le Catalogue</h3>
@@ -425,8 +397,6 @@ const CatalogTab: React.FC<CatalogTabProps> = ({ products, setProducts }) => {
             <p className="text-sm text-gray-500">Scanner des codes-barres ou faire un comptage manuel du stock.</p>
          </button>
       </div>
-
-      {/* Recent Movements Table Mockup */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
          <h3 className="font-bold text-gray-800 mb-4">Derniers Mouvements de Stock</h3>
          <table className="w-full text-sm text-left">
@@ -460,42 +430,21 @@ const CatalogTab: React.FC<CatalogTabProps> = ({ products, setProducts }) => {
   const CatalogListView = () => {
     const [filterStatus, setFilterStatus] = useState<string>('all');
     const filteredProducts = products.filter(p => filterStatus === 'all' || p.status === filterStatus);
-
-    const handleDuplicate = (product: CatalogProduct) => {
-      const newProduct = { 
-        ...product, 
-        id: Date.now().toString(), 
-        name: `${product.name} (Copie)`, 
-        status: 'draft' as ProductStatus,
-        stockQuantity: 0,
-        batches: [] // Reset batches for copy
-      };
-      setProducts(prev => [...prev, newProduct]);
-    };
-
     return (
       <div className="space-y-6 animate-fadeIn">
         <div className="flex items-center gap-2 mb-2">
            <button onClick={() => setView('dashboard')} className="text-gray-500 hover:text-gray-800 flex items-center text-sm font-bold"><ArrowLeft size={16} className="mr-1"/> Retour Dashboard</button>
         </div>
-
-        {/* Action Bar */}
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 bg-white p-4 rounded-xl shadow-sm border border-gray-100">
            <div className="flex items-center gap-2 w-full md:w-auto overflow-x-auto">
               <button onClick={() => setFilterStatus('all')} className={`px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap ${filterStatus === 'all' ? 'bg-gray-800 text-white' : 'bg-gray-100 text-gray-600'}`}>Tous</button>
               <button onClick={() => setFilterStatus('active')} className={`px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap ${filterStatus === 'active' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'}`}>En vente</button>
               <button onClick={() => setFilterStatus('draft')} className={`px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap ${filterStatus === 'draft' ? 'bg-yellow-100 text-yellow-700' : 'bg-gray-100 text-gray-600'}`}>Brouillons</button>
            </div>
-
-           <button 
-             onClick={() => { setEditingId(null); setView('form'); }}
-             className="w-full md:w-auto bg-agri-primary text-white px-4 py-2 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-agri-dark shadow-sm"
-           >
+           <button onClick={() => { setEditingId(null); setView('form'); }} className="w-full md:w-auto bg-agri-primary text-white px-4 py-2 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-agri-dark shadow-sm">
               <Plus size={18} /> Nouveau Produit
            </button>
         </div>
-
-        {/* Product Table */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
           <table className="w-full text-left border-collapse">
             <thead>
@@ -515,42 +464,20 @@ const CatalogTab: React.FC<CatalogTabProps> = ({ products, setProducts }) => {
                     <div className="flex items-center gap-3">
                        <div className="w-10 h-10 rounded-lg bg-gray-100 overflow-hidden relative">
                          <img src={p.media?.[0]?.url || p.image} alt="" className="w-full h-full object-cover"/>
-                         {p.media?.length > 1 && (
-                            <div className="absolute bottom-0 right-0 bg-black/50 text-white text-[8px] px-1">+{p.media.length-1}</div>
-                         )}
                        </div>
-                       <div>
-                         <p className="font-bold text-gray-800">{p.name}</p>
-                         <p className="text-xs text-gray-500">{p.category}</p>
-                       </div>
+                       <div><p className="font-bold text-gray-800">{p.name}</p><p className="text-xs text-gray-500">{p.category}</p></div>
                     </div>
                   </td>
-                  <td className="p-4 text-center">
-                    <span className={`font-bold ${p.stockQuantity <= p.minStockThreshold ? 'text-red-600' : 'text-gray-800'}`}>
-                      {p.stockQuantity} {p.unit}
-                    </span>
-                  </td>
-                  <td className="p-4 text-center">
-                     <span className="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full font-mono">
-                        {p.batches?.length || 0}
-                     </span>
-                  </td>
-                  <td className="p-4 font-mono">
-                     {p.pricing?.b2cPrice} F
-                  </td>
+                  <td className="p-4 text-center font-bold">{p.stockQuantity} {p.unit}</td>
+                  <td className="p-4 text-center">{p.batches?.length || 0}</td>
+                  <td className="p-4 font-mono">{p.pricing?.b2cPrice} F</td>
                   <td className="p-4">
-                     <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-bold ${
-                        p.status === 'active' ? 'bg-green-100 text-green-700' : 
-                        p.status === 'draft' ? 'bg-yellow-100 text-yellow-700' : 'bg-gray-100 text-gray-600'
-                     }`}>
+                     <span className={`px-2 py-1 rounded-full text-xs font-bold ${p.status === 'active' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'}`}>
                         {p.status === 'active' ? 'Actif' : 'Brouillon'}
                      </span>
                   </td>
                   <td className="p-4 text-right">
-                     <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button onClick={() => { setEditingId(p.id); setView('form'); }} className="p-1 text-gray-500 hover:text-blue-600" title="Modifier"><Edit2 size={16}/></button>
-                        <button onClick={() => handleDuplicate(p)} className="p-1 text-gray-500 hover:text-agri-primary" title="Dupliquer"><Copy size={16}/></button>
-                     </div>
+                     <button onClick={() => { setEditingId(p.id); setView('form'); }} className="p-1 text-gray-500 hover:text-blue-600"><Edit2 size={16}/></button>
                   </td>
                 </tr>
               ))}
@@ -564,371 +491,91 @@ const CatalogTab: React.FC<CatalogTabProps> = ({ products, setProducts }) => {
   const CatalogFormView = () => {
     const [step, setStep] = useState(1);
     const [formData, setFormData] = useState<CatalogProduct>(
-      editingId 
-      ? products.find(p => p.id === editingId) as CatalogProduct
-      : {
+      editingId ? products.find(p => p.id === editingId) as CatalogProduct : {
         id: '', name: '', category: 'Légumes', price: 0, unit: 'kg', farmerName: '', location: '', coordinates: {lat:0, lng:0},
         image: '', available: true, rating: 0, freshness: 'recolte_du_jour', preparationTime: 0,
-        status: 'draft', channels: 'B2C', description: '', 
-        media: [], // New structure
-        batches: [], // New structure
-        movements: [],
+        status: 'draft', channels: 'B2C', description: '', media: [], batches: [], movements: [],
         specs: { variety: '', productionMode: 'Conventionnel', certifications: [], harvestDate: new Date(), origin: '', weightUnit: 'kg', quality: 'Standard' },
         pricing: { b2cPrice: 0, b2cMinQty: 1, b2bPrice: 0, b2bMinQty: 50 }, stockQuantity: 0, minStockThreshold: 10, soldQuantity: 0, views: 0, lastUpdated: new Date(),
         syncStatus: { b2c: 'pending', b2b: 'pending' }
       } as CatalogProduct
     );
-
     const handleSave = () => {
-      // Recalculate stock from batches if batches exist
-      const totalStock = formData.batches.length > 0 
-         ? formData.batches.reduce((acc, b) => acc + b.currentQuantity, 0)
-         : formData.stockQuantity;
-
+      const totalStock = formData.batches.length > 0 ? formData.batches.reduce((acc, b) => acc + b.currentQuantity, 0) : formData.stockQuantity;
       const finalData = { ...formData, stockQuantity: totalStock, lastUpdated: new Date() };
-
-      if (editingId) {
-        setProducts(prev => prev.map(p => p.id === editingId ? finalData : p));
-      } else {
-        setProducts(prev => [...prev, { ...finalData, id: Date.now().toString(), status: 'active' }]);
-      }
+      setProducts(prev => editingId ? prev.map(p => p.id === editingId ? finalData : p) : [...prev, { ...finalData, id: Date.now().toString(), status: 'active' }]);
       setView('list');
     };
-
     return (
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 animate-fadeIn">
-         {/* Form Header */}
          <div className="flex justify-between items-center mb-6 pb-4 border-b">
-           <div className="flex items-center gap-4">
-              <button onClick={() => setView('list')} className="p-2 bg-gray-100 rounded-full hover:bg-gray-200"><ArrowLeft size={18}/></button>
-              <h3 className="font-bold text-lg text-gray-900">{editingId ? 'Modifier le Produit' : 'Créer un Produit'}</h3>
-           </div>
-           <div className="flex gap-2">
-              <button className="px-4 py-2 text-sm text-gray-500 font-bold hover:bg-gray-50 rounded-lg">Brouillon</button>
-              <button onClick={handleSave} className="px-6 py-2 bg-agri-primary text-white rounded-lg font-bold hover:bg-agri-dark flex items-center gap-2">
-                 <Save size={18}/> Enregistrer
-              </button>
-           </div>
+           <div className="flex items-center gap-4"><button onClick={() => setView('list')} className="p-2 bg-gray-100 rounded-full hover:bg-gray-200"><ArrowLeft size={18}/></button><h3 className="font-bold text-lg text-gray-900">{editingId ? 'Modifier' : 'Créer'}</h3></div>
+           <button onClick={handleSave} className="px-6 py-2 bg-agri-primary text-white rounded-lg font-bold hover:bg-agri-dark flex items-center gap-2"><Save size={18}/> Enregistrer</button>
          </div>
-
-         {/* Stepper */}
          <div className="grid grid-cols-4 gap-2 mb-8">
-            {['Infos', 'Images', 'Stock & Lots', 'Publication'].map((label, i) => (
-               <button 
-                 key={i} 
-                 onClick={() => setStep(i+1)}
-                 className={`py-2 text-center text-sm font-bold border-b-2 transition-colors ${step === i+1 ? 'border-agri-primary text-agri-primary' : 'border-gray-200 text-gray-400'}`}
-               >
-                  {i+1}. {label}
-               </button>
+            {['Infos', 'Images', 'Stock', 'Pub.'].map((label, i) => (
+               <button key={i} onClick={() => setStep(i+1)} className={`py-2 text-center text-sm font-bold border-b-2 transition-colors ${step === i+1 ? 'border-agri-primary text-agri-primary' : 'border-gray-200 text-gray-400'}`}>{i+1}. {label}</button>
             ))}
          </div>
-
          <div className="min-h-[400px]">
-            {/* STEP 1: INFOS */}
             {step === 1 && (
-               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-fadeIn">
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-4">
-                     <div>
-                        <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Nom du produit</label>
-                        <input type="text" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full p-3 border rounded-lg" placeholder="Ex: Oignons Galmi" />
-                     </div>
-                     <div>
-                        <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Catégorie</label>
-                        <select value={formData.category} onChange={e => setFormData({...formData, category: e.target.value})} className="w-full p-3 border rounded-lg bg-white">
-                           <option>Légumes</option>
-                           <option>Fruits</option>
-                           <option>Céréales</option>
-                           <option>Tubercules</option>
-                        </select>
-                     </div>
-                     <div>
-                        <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Description</label>
-                        <textarea rows={4} value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} className="w-full p-3 border rounded-lg" placeholder="Description commerciale..."></textarea>
-                     </div>
+                     <div><label className="block text-xs font-bold text-gray-500 uppercase mb-1">Nom</label><input type="text" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full p-3 border rounded-lg" /></div>
+                     <div><label className="block text-xs font-bold text-gray-500 uppercase mb-1">Catégorie</label><select value={formData.category} onChange={e => setFormData({...formData, category: e.target.value})} className="w-full p-3 border rounded-lg"><option>Légumes</option><option>Fruits</option></select></div>
                   </div>
-                  <div className="space-y-4 bg-gray-50 p-4 rounded-xl">
-                     <h4 className="font-bold text-gray-700">Tarification</h4>
-                     <div className="flex gap-4">
-                        <div className="flex-1">
-                           <label className="block text-xs font-bold text-gray-500 mb-1">Prix Détail (B2C)</label>
-                           <div className="relative"><input type="number" value={formData.pricing.b2cPrice} onChange={e => setFormData({...formData, pricing: {...formData.pricing, b2cPrice: parseFloat(e.target.value)}})} className="w-full p-3 pl-8 border rounded-lg"/><span className="absolute left-3 top-3 text-gray-400 font-bold">F</span></div>
-                        </div>
-                        <div className="flex-1">
-                           <label className="block text-xs font-bold text-gray-500 mb-1">Prix Gros (B2B)</label>
-                           <div className="relative"><input type="number" value={formData.pricing.b2bPrice} onChange={e => setFormData({...formData, pricing: {...formData.pricing, b2bPrice: parseFloat(e.target.value)}})} className="w-full p-3 pl-8 border rounded-lg"/><span className="absolute left-3 top-3 text-gray-400 font-bold">F</span></div>
-                        </div>
-                     </div>
-                     <div>
-                        <label className="block text-xs font-bold text-gray-500 mb-1">Unité de vente</label>
-                        <select value={formData.unit} onChange={e => setFormData({...formData, unit: e.target.value})} className="w-full p-3 border rounded-lg bg-white">
-                           <option value="kg">Kilogramme (kg)</option>
-                           <option value="unit">Pièce / Unité</option>
-                           <option value="crate">Caisse</option>
-                           <option value="bunch">Bouquet</option>
-                        </select>
-                     </div>
+                  <div className="bg-gray-50 p-4 rounded-xl space-y-4">
+                     <h4 className="font-bold text-gray-700">Prix</h4>
+                     <input type="number" value={formData.pricing.b2cPrice} onChange={e => setFormData({...formData, pricing: {...formData.pricing, b2cPrice: parseFloat(e.target.value)}})} className="w-full p-3 border rounded-lg" placeholder="Prix B2C"/>
                   </div>
                </div>
             )}
-
-            {/* STEP 2: IMAGES */}
-            {step === 2 && (
-               <div className="animate-fadeIn">
-                  <div className="bg-blue-50 border border-blue-200 p-4 rounded-lg mb-6 flex gap-3">
-                     <Sparkles className="text-blue-600 flex-shrink-0" />
-                     <div className="text-sm text-blue-800">
-                        <p className="font-bold">IA de Recommandation Visuelle</p>
-                        <p>Nos algorithmes analysent la qualité de vos photos pour maximiser vos ventes. Préférez la lumière naturelle.</p>
-                     </div>
-                  </div>
-                  <MediaManager media={formData.media || []} onChange={(m) => setFormData({...formData, media: m})} />
-               </div>
-            )}
-
-            {/* STEP 3: STOCK & LOTS */}
-            {step === 3 && (
-               <div className="space-y-6 animate-fadeIn">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                     <div className="bg-gray-50 p-6 rounded-xl text-center">
-                        <p className="text-gray-500 text-sm font-bold uppercase mb-2">Stock Total Calculé</p>
-                        <div className="text-4xl font-bold text-gray-800">
-                           {formData.batches && formData.batches.length > 0 
-                              ? formData.batches.reduce((acc, b) => acc + b.currentQuantity, 0)
-                              : formData.stockQuantity}
-                           <span className="text-lg text-gray-500 ml-1">{formData.unit}</span>
-                        </div>
-                        <p className="text-xs text-green-600 mt-2 font-bold flex justify-center items-center gap-1"><RefreshCw size={12}/> Mis à jour auto</p>
-                     </div>
-                     <div className="space-y-4">
-                        <div>
-                           <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Seuil d'alerte (Stock Bas)</label>
-                           <input type="number" value={formData.minStockThreshold} onChange={e => setFormData({...formData, minStockThreshold: parseInt(e.target.value)})} className="w-full p-3 border rounded-lg" />
-                        </div>
-                        <div className="flex items-center gap-2">
-                           <input type="checkbox" className="w-5 h-5 text-agri-primary rounded"/>
-                           <span className="text-sm text-gray-700">Alerter en cas de péremption proche (7 jours)</span>
-                        </div>
-                     </div>
-                  </div>
-                  
-                  <div className="border-t border-gray-100 pt-6">
-                     <BatchManager batches={formData.batches || []} onChange={(b) => setFormData({...formData, batches: b})} />
-                  </div>
-               </div>
-            )}
-
-            {/* STEP 4: PUBLICATION */}
-            {step === 4 && (
-               <div className="animate-fadeIn space-y-6">
-                  <div className="bg-gray-50 p-6 rounded-xl border border-gray-100">
-                     <h4 className="font-bold text-gray-800 mb-4">Canaux de Vente</h4>
-                     <div className="space-y-4">
-                        <div className="flex items-center justify-between p-4 bg-white rounded-lg border border-gray-200">
-                           <div className="flex items-center gap-3">
-                              <div className="p-2 bg-blue-100 text-blue-600 rounded-lg"><ShoppingBag size={20}/></div>
-                              <div>
-                                 <p className="font-bold text-gray-800">Marketplace B2C</p>
-                                 <p className="text-xs text-gray-500">Vente au détail aux consommateurs</p>
-                              </div>
-                           </div>
-                           <label className="relative inline-flex items-center cursor-pointer">
-                              <input type="checkbox" checked={formData.channels === 'B2C' || formData.channels === 'BOTH'} onChange={() => {}} className="sr-only peer" />
-                              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                           </label>
-                        </div>
-                        <div className="flex items-center justify-between p-4 bg-white rounded-lg border border-gray-200">
-                           <div className="flex items-center gap-3">
-                              <div className="p-2 bg-purple-100 text-purple-600 rounded-lg"><Truck size={20}/></div>
-                              <div>
-                                 <p className="font-bold text-gray-800">Plateforme B2B (Gros)</p>
-                                 <p className="text-xs text-gray-500">Vente aux restaurants et supermarchés</p>
-                              </div>
-                           </div>
-                           <label className="relative inline-flex items-center cursor-pointer">
-                              <input type="checkbox" checked={formData.channels === 'B2B' || formData.channels === 'BOTH'} onChange={() => {}} className="sr-only peer" />
-                              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
-                           </label>
-                        </div>
-                     </div>
-                  </div>
-
-                  <div className="flex gap-4">
-                     <div className="flex-1 bg-white p-4 rounded-xl border border-gray-200 text-center">
-                        <div className="text-gray-400 mb-2"><Globe size={24} className="mx-auto"/></div>
-                        <p className="text-sm font-bold">Synchronisation</p>
-                        <p className="text-xs text-gray-500 mt-1">Les stocks seront mis à jour en temps réel sur tous les canaux.</p>
-                     </div>
-                     <div className="flex-1 bg-white p-4 rounded-xl border border-gray-200 text-center">
-                         <div className="text-gray-400 mb-2"><CheckCircle size={24} className="mx-auto"/></div>
-                         <p className="text-sm font-bold">Validation Auto</p>
-                         <p className="text-xs text-gray-500 mt-1">L'IA vérifiera la conformité de l'annonce avant publication.</p>
-                     </div>
-                  </div>
-               </div>
-            )}
+            {step === 2 && <MediaManager media={formData.media} onChange={m => setFormData({...formData, media: m})} />}
+            {step === 3 && <BatchManager batches={formData.batches} onChange={b => setFormData({...formData, batches: b})} />}
+            {step === 4 && <div className="p-8 text-center text-gray-500"><Globe size={48} className="mx-auto mb-4 text-agri-primary"/><p className="font-bold">Prêt pour la synchronisation multi-canal.</p></div>}
          </div>
-         
          <div className="flex justify-between mt-8 pt-6 border-t">
-            {step > 1 ? (
-               <button onClick={() => setStep(s => s-1)} className="px-6 py-2 text-gray-600 font-bold hover:bg-gray-100 rounded-lg">Précédent</button>
-            ) : <div></div>}
-            
-            {step < 4 ? (
-               <button onClick={() => setStep(s => s+1)} className="px-6 py-2 bg-agri-primary text-white font-bold rounded-lg hover:bg-agri-dark">Suivant</button>
-            ) : (
-               <button onClick={handleSave} className="px-8 py-2 bg-green-600 text-white font-bold rounded-lg hover:bg-green-700 shadow-lg shadow-green-200">Publier le produit</button>
-            )}
+            {step > 1 && <button onClick={() => setStep(s => s-1)} className="px-6 py-2 text-gray-600 font-bold hover:bg-gray-100 rounded-lg">Précédent</button>}
+            {step < 4 ? <button onClick={() => setStep(s => s+1)} className="px-6 py-2 bg-agri-primary text-white font-bold rounded-lg ml-auto">Suivant</button> : <button onClick={handleSave} className="px-8 py-2 bg-green-600 text-white font-bold rounded-lg ml-auto">Publier</button>}
          </div>
       </div>
     );
   };
-
   return view === 'dashboard' ? <StockDashboard /> : view === 'list' ? <CatalogListView /> : <CatalogFormView />;
 };
 
-// 4. Orders Tab (Logistics View)
+// 4. Orders Tab
 const OrdersTab: React.FC<OrdersTabProps> = ({ orders, onProcessOrder }) => {
   const [shippingWizard, setShippingWizard] = useState<{open: boolean, step: number, orderId: string | null}>({open: false, step: 0, orderId: null});
-
-  const openWizard = (id: string) => {
-    setShippingWizard({open: true, step: 1, orderId: id});
-  };
-
+  const openWizard = (id: string) => setShippingWizard({open: true, step: 1, orderId: id});
   const nextStep = () => {
     if (shippingWizard.step >= 3) {
       if (shippingWizard.orderId) onProcessOrder(shippingWizard.orderId);
       setShippingWizard({open: false, step: 0, orderId: null});
-    } else {
-      setShippingWizard(prev => ({...prev, step: prev.step + 1}));
-    }
+    } else setShippingWizard(prev => ({...prev, step: prev.step + 1}));
   };
-
   return (
-    <div className="space-y-6 animate-fadeIn relative">
-      <h2 className="text-xl font-bold text-gray-800">Expéditions & Commandes</h2>
-      
-      {/* SHIPPING WIZARD OVERLAY */}
+    <div className="space-y-6 animate-fadeIn">
+      <h2 className="text-xl font-bold text-gray-800">Commandes</h2>
       {shippingWizard.open && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full overflow-hidden animate-slideUp">
-            <div className="bg-agri-dark text-white p-4 flex justify-between items-center">
-              <h3 className="font-bold flex items-center gap-2"><Truck size={20}/> Assistant Expédition</h3>
-              <button onClick={() => setShippingWizard({open:false, step:0, orderId:null})}><X size={20}/></button>
-            </div>
-            
-            <div className="p-8">
-              {/* Stepper */}
-              <div className="flex items-center justify-between mb-8 px-4">
-                {[1, 2, 3].map(s => (
-                  <div key={s} className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${s <= shippingWizard.step ? 'bg-agri-primary text-white' : 'bg-gray-100 text-gray-400'}`}>
-                    {s}
-                  </div>
-                ))}
-              </div>
-
-              {shippingWizard.step === 1 && (
-                <div className="text-center space-y-4">
-                  <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mx-auto text-blue-600"><Box size={32}/></div>
-                  <h4 className="text-xl font-bold">Préparation Colis</h4>
-                  <p className="text-gray-500">Veuillez confirmer que les articles sont emballés et étiquetés.</p>
-                  <div className="bg-gray-50 p-4 rounded-lg text-left">
-                    <label className="flex items-center gap-2 p-2 border-b border-gray-200">
-                      <input type="checkbox" className="w-5 h-5 text-agri-primary" defaultChecked /> 
-                      <span>Produits vérifiés (Qualité/Poids)</span>
-                    </label>
-                    <label className="flex items-center gap-2 p-2">
-                      <input type="checkbox" className="w-5 h-5 text-agri-primary" defaultChecked /> 
-                      <span>Étiquette destinataire collée</span>
-                    </label>
-                  </div>
-                </div>
-              )}
-
-              {shippingWizard.step === 2 && (
-                <div className="text-center space-y-4">
-                   <div className="w-16 h-16 bg-yellow-50 rounded-full flex items-center justify-center mx-auto text-yellow-600"><Truck size={32}/></div>
-                   <h4 className="text-xl font-bold">Choix Transporteur</h4>
-                   <div className="grid grid-cols-2 gap-4 text-left">
-                      <div className="border-2 border-agri-primary bg-green-50 p-4 rounded-xl cursor-pointer">
-                        <div className="font-bold flex justify-between">Tiak-Tiak <span className="text-agri-primary">1500 F</span></div>
-                        <div className="text-xs text-gray-500">Express (45 min)</div>
-                      </div>
-                      <div className="border border-gray-200 p-4 rounded-xl cursor-pointer hover:bg-gray-50">
-                        <div className="font-bold flex justify-between">Propre Flotte <span className="text-gray-800">0 F</span></div>
-                        <div className="text-xs text-gray-500">Standard (2h)</div>
-                      </div>
-                   </div>
-                </div>
-              )}
-
-              {shippingWizard.step === 3 && (
-                <div className="text-center space-y-4">
-                   <div className="w-16 h-16 bg-purple-50 rounded-full flex items-center justify-center mx-auto text-purple-600"><Printer size={32}/></div>
-                   <h4 className="text-xl font-bold">Documents & Validation</h4>
-                   <div className="bg-gray-50 p-4 rounded-lg space-y-2">
-                      <div className="flex items-center justify-between p-2 bg-white border rounded">
-                         <span className="flex items-center gap-2 text-sm"><FileText size={16}/> Bordereau_Livraison.pdf</span>
-                         <span className="text-xs text-green-600 font-bold">Généré</span>
-                      </div>
-                      <div className="flex items-center justify-between p-2 bg-white border rounded">
-                         <span className="flex items-center gap-2 text-sm"><FileText size={16}/> Facture_Client.pdf</span>
-                         <span className="text-xs text-green-600 font-bold">Généré</span>
-                      </div>
-                   </div>
-                </div>
-              )}
-
-              <button onClick={nextStep} className="w-full bg-agri-primary text-white py-4 rounded-xl font-bold mt-8 hover:bg-agri-dark">
-                {shippingWizard.step === 3 ? "Confirmer & Expédier" : "Suivant"}
-              </button>
+          <div className="bg-white rounded-xl shadow-2xl max-w-md w-full p-8 animate-slideUp">
+            <h3 className="text-xl font-bold mb-6 flex items-center gap-2"><Truck className="text-agri-primary"/> Expédition</h3>
+            <div className="space-y-6">
+               <div className="flex justify-between">{[1, 2, 3].map(s => <div key={s} className={`w-8 h-8 rounded-full flex items-center justify-center font-bold ${s <= shippingWizard.step ? 'bg-agri-primary text-white' : 'bg-gray-100 text-gray-400'}`}>{s}</div>)}</div>
+               {shippingWizard.step === 1 && <div className="text-center"><Box size={48} className="mx-auto text-blue-500 mb-2"/><p>Vérifiez le contenu du colis.</p></div>}
+               {shippingWizard.step === 2 && <div className="text-center"><Truck size={48} className="mx-auto text-orange-500 mb-2"/><p>Sélectionnez un transporteur Tiak-Tiak.</p></div>}
+               {shippingWizard.step === 3 && <div className="text-center"><CheckCircle size={48} className="mx-auto text-green-500 mb-2"/><p>Validez pour notifier le client.</p></div>}
+               <button onClick={nextStep} className="w-full bg-agri-primary text-white py-3 rounded-xl font-bold">Continuer</button>
             </div>
           </div>
         </div>
       )}
-
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-         {orders.map((order) => (
-            <div key={order.id} className="p-6 border-b border-gray-100 last:border-0 hover:bg-gray-50 transition-colors">
-               <div className="flex flex-col md:flex-row justify-between gap-4">
-                  <div className="flex-1">
-                     <div className="flex items-center gap-3 mb-2">
-                        <span className="font-mono font-bold text-gray-500">#{order.id}</span>
-                        <span className={`px-2 py-0.5 rounded text-xs font-bold uppercase ${order.status === 'pending' ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800'}`}>
-                          {order.status === 'pending' ? 'À Traiter' : order.status}
-                        </span>
-                     </div>
-                     <h3 className="font-bold text-lg text-gray-900">{order.customerName}</h3>
-                     <p className="text-sm text-gray-500 flex items-center gap-1 mt-1">
-                        <MapPin size={14}/> {order.deliveryAddress}
-                     </p>
-                  </div>
-                  
-                  <div className="flex-1 border-l border-gray-100 md:pl-6">
-                     <p className="text-xs font-bold text-gray-400 uppercase mb-2">Contenu</p>
-                     {order.items.map((item, i) => (
-                        <div key={i} className="flex justify-between text-sm mb-1">
-                           <span>{item.quantity}x {item.name}</span>
-                           <span className="font-mono">{item.price * item.quantity} F</span>
-                        </div>
-                     ))}
-                  </div>
-
-                  <div className="flex items-center">
-                     {order.status === 'pending' ? (
-                        <button 
-                          onClick={() => openWizard(order.id)}
-                          className="w-full md:w-auto bg-agri-primary text-white px-6 py-3 rounded-lg font-bold hover:bg-agri-dark shadow-sm flex items-center gap-2 justify-center"
-                        >
-                          <Truck size={18}/> Préparer & Expédier
-                        </button>
-                     ) : (
-                        <button className="w-full md:w-auto bg-gray-100 text-gray-500 px-6 py-3 rounded-lg font-bold flex items-center gap-2 cursor-default">
-                           <CheckCircle size={18}/> Expédié
-                        </button>
-                     )}
-                  </div>
-               </div>
+         {orders.map(order => (
+            <div key={order.id} className="p-6 border-b border-gray-100 last:border-0 hover:bg-gray-50 flex justify-between items-center">
+               <div><p className="font-mono font-bold text-gray-500">#{order.id}</p><h3 className="font-bold text-gray-900">{order.customerName}</h3></div>
+               <button onClick={() => openWizard(order.id)} className={`px-4 py-2 rounded-lg font-bold ${order.status === 'pending' ? 'bg-agri-primary text-white' : 'bg-gray-100 text-gray-500'}`}>{order.status === 'pending' ? 'Expédier' : 'Terminé'}</button>
             </div>
          ))}
       </div>
@@ -936,175 +583,63 @@ const OrdersTab: React.FC<OrdersTabProps> = ({ orders, onProcessOrder }) => {
   );
 };
 
-// Main Dashboard Component (Smart Container)
+// Main Dashboard Component
 const FarmerDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'overview' | 'production' | 'catalog' | 'orders'>('overview');
   const [profile, setProfile] = useState<FarmerProfile | null>(null);
-
-  // --- CENTRALIZED STATE (Lifted Up) ---
   const [crops, setCrops] = useState<Crop[]>([
     { id: 1, name: 'Parcelle A - Oignons', stage: 'Maturation', planted: '15 Sept', harvest: '15 Nov', progress: 80, health: 'Excellent' },
     { id: 2, name: 'Serre 2 - Tomates', stage: 'Croissance', planted: '01 Oct', harvest: '20 Déc', progress: 45, health: 'Bon' },
   ]);
-
   const [products, setProducts] = useState<CatalogProduct[]>([
     {
       id: '1', name: 'Oignons de Potou', category: 'Légumes', price: 450, unit: 'kg', stockQuantity: 150,
       minStockThreshold: 50, soldQuantity: 1200, farmerName: 'Moussa Diop', location: 'Niayes', coordinates: {lat:0, lng:0},
       image: 'https://picsum.photos/400/300?random=1', available: true, rating: 4.8, freshness: 'recolte_hier', preparationTime: 0,
-      status: 'active', channels: 'BOTH', description: 'Oignons violets', 
-      media: [{id: '1', url: 'https://picsum.photos/400/300?random=1', type: 'main', isPrimary: true}], 
-      batches: [
-         {id: 'b1', batchNumber: 'LOT-2024-11-01', harvestDate: new Date('2024-11-01'), initialQuantity: 200, currentQuantity: 150, location: 'Entrepôt A'}
-      ],
-      movements: [],
+      status: 'active', channels: 'BOTH', description: 'Oignons violets', media: [], batches: [], movements: [],
       specs: { variety: 'Violet', productionMode: 'Raisonné', certifications: [], harvestDate: new Date(), origin: 'Potou', weightUnit: 'kg', quality: 'Premium' },
-      pricing: { b2cPrice: 450, b2cMinQty: 1, b2bPrice: 350, b2bMinQty: 100 }, views: 145, lastUpdated: new Date(),
-      syncStatus: { b2c: 'synced', b2b: 'synced' }
+      pricing: { b2cPrice: 450, b2cMinQty: 1, b2bPrice: 350, b2bMinQty: 100 }, views: 145, lastUpdated: new Date(), syncStatus: { b2c: 'synced', b2b: 'synced' }
     }
   ]);
-
-  const [orders, setOrders] = useState<Order[]>([
-    {
-      id: 'CMD-8492', customerName: 'Fatou Ndiaye', items: [{id:'1', name:'Oignons', quantity:5, price:450} as any],
-      total: 2250, status: 'pending', deliveryAddress: 'Pikine Tally Bou Bess', estimatedTime: new Date(), date: new Date()
-    }
-  ]);
-
-  // --- HANDLERS ---
-  const handleAddCrop = (crop: Partial<Crop>) => {
-    const newCrop: Crop = {
-      id: Date.now(),
-      name: crop.name || 'Nouvelle culture',
-      stage: 'Semis',
-      planted: new Date().toLocaleDateString(),
-      harvest: 'Estimation...',
-      progress: 0,
-      health: 'Bon',
-      ...crop
-    };
-    setCrops([...crops, newCrop]);
-  };
-
-  const handleUpdateCrop = (id: string | number, updates: Partial<Crop>) => {
-    setCrops(prev => prev.map(c => c.id === id ? { ...c, ...updates } : c));
-  };
+  const [orders, setOrders] = useState<Order[]>([{ id: 'CMD-8492', customerName: 'Fatou Ndiaye', items: [], total: 2250, status: 'pending', deliveryAddress: 'Dakar', estimatedTime: new Date(), date: new Date() }]);
 
   const handleHarvest = (id: string | number) => {
     const crop = crops.find(c => c.id === id);
     if (!crop) return;
-
-    if (confirm(`Récolter ${crop.name} et créer un lot de stock ?`)) {
-      // 1. Update Crop Status
-      handleUpdateCrop(id, { stage: 'Récolte', progress: 100 });
-
-      // 2. Create Product (Draft) with Batch
-      const newBatch: ProductBatch = {
-        id: Date.now().toString(),
-        batchNumber: `LOT-${new Date().getFullYear()}-${crop.name.substring(0,3).toUpperCase()}`,
-        harvestDate: new Date(),
-        initialQuantity: 100, // Default to estimate, user edits later
-        currentQuantity: 100,
-        location: 'Réception'
-      };
-
+    if (confirm(`Récolter ${crop.name} ?`)) {
+      setCrops(prev => prev.map(c => c.id === id ? { ...c, stage: 'Récolte', progress: 100 } : c));
       const newProduct: CatalogProduct = {
-        id: Date.now().toString(),
-        name: crop.name,
-        category: 'Légumes', 
-        price: 0,
-        unit: 'kg',
-        farmerName: profile?.farmName || '',
-        location: 'Ferme',
-        coordinates: {lat:0, lng:0},
-        image: 'https://picsum.photos/400/300',
-        available: true,
-        rating: 0,
-        freshness: 'recolte_du_jour',
-        preparationTime: 0,
-        status: 'draft',
-        channels: 'B2C',
-        description: 'Récolte fraîche',
-        media: [],
-        batches: [newBatch],
-        movements: [],
-        specs: { variety: '', productionMode: 'Conventionnel', certifications: [], harvestDate: new Date(), origin: '', weightUnit: 'kg', quality: 'Standard' },
-        pricing: { b2cPrice: 0, b2cMinQty: 1, b2bPrice: 0, b2bMinQty: 0 },
-        stockQuantity: 100,
-        minStockThreshold: 10,
-        soldQuantity: 0,
-        views: 0,
-        lastUpdated: new Date(),
-        syncStatus: { b2c: 'pending', b2b: 'pending' }
+        id: Date.now().toString(), name: crop.name, category: 'Légumes', price: 0, unit: 'kg', farmerName: profile?.farmName || '',
+        location: 'Ferme', coordinates: {lat:0, lng:0}, image: 'https://picsum.photos/400/300', available: true, rating: 0,
+        freshness: 'recolte_du_jour', preparationTime: 0, status: 'draft', channels: 'B2C', description: 'Récolte fraîche',
+        media: [], batches: [{ id: Date.now().toString(), batchNumber: `LOT-${crop.name.substring(0,3).toUpperCase()}`, harvestDate: new Date(), initialQuantity: 100, currentQuantity: 100 }],
+        movements: [], specs: { variety: '', productionMode: 'Bio', certifications: [], harvestDate: new Date(), origin: '', weightUnit: 'kg', quality: 'Standard' },
+        pricing: { b2cPrice: 0, b2cMinQty: 1, b2bPrice: 0, b2bMinQty: 0 }, stockQuantity: 100, minStockThreshold: 10, soldQuantity: 0, views: 0, lastUpdated: new Date(), syncStatus: { b2c: 'pending', b2b: 'pending' }
       };
-      
       setProducts(prev => [newProduct, ...prev]);
-      alert("Lot créé dans l'inventaire. Veuillez compléter la fiche produit.");
       setActiveTab('catalog');
     }
   };
 
-  const handleProcessOrder = (orderId: string) => {
-    setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: 'shipping' } : o));
-    alert(`Commande ${orderId} expédiée avec succès !`);
-  };
-
-  if (!profile) {
-    return <FarmerOnboarding onComplete={setProfile} />;
-  }
-
+  if (!profile) return <FarmerOnboarding onComplete={setProfile} />;
   return (
     <div className="min-h-screen bg-slate-50 pb-20">
-      {/* Sidebar Desktop */}
       <div className="hidden md:flex fixed left-0 top-16 bottom-0 w-64 bg-slate-900 text-white flex-col z-40">
         <div className="p-6">
-            <div className="flex items-center gap-3 mb-8">
-               <div className="w-12 h-12 bg-agri-primary rounded-lg flex items-center justify-center font-bold text-xl text-white shadow-lg">
-                 {profile.farmName.charAt(0)}
-               </div>
-               <div>
-                  <h2 className="font-bold text-sm leading-tight text-gray-200">{profile.farmName}</h2>
-                  <p className="text-[10px] text-green-400 flex items-center mt-1"><span className="w-1.5 h-1.5 bg-green-500 rounded-full mr-1"></span> ERP Connecté</p>
-               </div>
-            </div>
-            
+            <div className="flex items-center gap-3 mb-8"><div className="w-12 h-12 bg-agri-primary rounded-lg flex items-center justify-center font-bold text-xl">{profile.farmName.charAt(0)}</div><div><h2 className="font-bold text-sm leading-tight">{profile.farmName}</h2><p className="text-[10px] text-green-400">ERP Connecté</p></div></div>
             <div className="space-y-1">
-                <button onClick={() => setActiveTab('overview')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all text-sm font-medium ${activeTab === 'overview' ? 'bg-agri-primary' : 'hover:bg-slate-800'}`}><TrendingUp size={18} /> Tableau de Bord</button>
-                <button onClick={() => setActiveTab('production')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all text-sm font-medium ${activeTab === 'production' ? 'bg-agri-primary' : 'hover:bg-slate-800'}`}><Sprout size={18} /> Cultures</button>
-                <button onClick={() => setActiveTab('catalog')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all text-sm font-medium ${activeTab === 'catalog' ? 'bg-agri-primary' : 'hover:bg-slate-800'}`}><Package size={18} /> Catalogue & Stock</button>
-                <button onClick={() => setActiveTab('orders')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all text-sm font-medium ${activeTab === 'orders' ? 'bg-agri-primary' : 'hover:bg-slate-800'}`}><ShoppingBag size={18} /> Commandes</button>
+                <button onClick={() => setActiveTab('overview')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium ${activeTab === 'overview' ? 'bg-agri-primary' : 'hover:bg-slate-800'}`}><TrendingUp size={18} /> Accueil</button>
+                <button onClick={() => setActiveTab('production')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium ${activeTab === 'production' ? 'bg-agri-primary' : 'hover:bg-slate-800'}`}><Sprout size={18} /> Cultures</button>
+                <button onClick={() => setActiveTab('catalog')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium ${activeTab === 'catalog' ? 'bg-agri-primary' : 'hover:bg-slate-800'}`}><Package size={18} /> Stock</button>
+                <button onClick={() => setActiveTab('orders')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium ${activeTab === 'orders' ? 'bg-agri-primary' : 'hover:bg-slate-800'}`}><ShoppingBag size={18} /> Commandes</button>
             </div>
         </div>
       </div>
-
-      {/* Main Content Area */}
-      <div className="md:ml-64 transition-all duration-300">
-         <div className="hidden md:flex px-8 py-6 justify-between items-center bg-white border-b border-gray-200 sticky top-16 z-30">
-             <h1 className="text-xl font-bold text-gray-900">
-                {activeTab === 'overview' && "Vue d'ensemble"}
-                {activeTab === 'production' && "Gestion de Production"}
-                {activeTab === 'catalog' && "Catalogue Produits"}
-                {activeTab === 'orders' && "Gestion des Commandes"}
-             </h1>
-             <div className="flex items-center gap-3">
-                 <span className="px-3 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full flex items-center gap-1"><CheckCircle size={12}/> Système opérationnel</span>
-             </div>
-         </div>
-
-         <div className="p-4 md:p-8 max-w-7xl mx-auto">
-            {activeTab === 'overview' && <OverviewTab />}
-            {activeTab === 'production' && <ProductionTab crops={crops} onAddCrop={handleAddCrop} onUpdateCrop={handleUpdateCrop} onHarvest={handleHarvest} />}
-            {activeTab === 'catalog' && <CatalogTab products={products} setProducts={setProducts} />}
-            {activeTab === 'orders' && <OrdersTab orders={orders} onProcessOrder={handleProcessOrder} />}
-         </div>
-      </div>
-
-      {/* Mobile Nav */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-2 py-2 flex justify-around items-center z-50 md:hidden">
-        <button onClick={() => setActiveTab('overview')} className={`p-2 rounded-lg ${activeTab === 'overview' ? 'text-agri-primary' : 'text-gray-400'}`}><TrendingUp size={24} /></button>
-        <button onClick={() => setActiveTab('production')} className={`p-2 rounded-lg ${activeTab === 'production' ? 'text-agri-primary' : 'text-gray-400'}`}><Sprout size={24} /></button>
-        <button onClick={() => setActiveTab('catalog')} className={`p-2 rounded-lg ${activeTab === 'catalog' ? 'text-agri-primary' : 'text-gray-400'}`}><Package size={24} /></button>
-        <button onClick={() => setActiveTab('orders')} className={`p-2 rounded-lg ${activeTab === 'orders' ? 'text-agri-primary' : 'text-gray-400'}`}><ShoppingBag size={24} /></button>
+      <div className="md:ml-64 p-4 md:p-8 max-w-7xl mx-auto transition-all">
+         {activeTab === 'overview' && <OverviewTab />}
+         {activeTab === 'production' && <ProductionTab crops={crops} onAddCrop={c => setCrops([...crops, {...c, id: Date.now(), stage: 'Semis', planted: 'Aujourd\'hui', progress: 0, health: 'Bon'} as Crop])} onUpdateCrop={(id, up) => setCrops(crops.map(c => c.id === id ? {...c, ...up} : c))} onHarvest={handleHarvest} />}
+         {activeTab === 'catalog' && <CatalogTab products={products} setProducts={setProducts} />}
+         {activeTab === 'orders' && <OrdersTab orders={orders} onProcessOrder={id => setOrders(orders.map(o => o.id === id ? {...o, status: 'delivered'} : o))} />}
       </div>
     </div>
   );

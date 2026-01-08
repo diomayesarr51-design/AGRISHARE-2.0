@@ -1,22 +1,18 @@
 import { GoogleGenAI, GenerateContentResponse } from "@google/genai";
 import { SYSTEM_INSTRUCTION_AI } from '../constants';
 
-// Initialize the Gemini AI client
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
+// Initialize the Gemini AI client with the system-provided API Key
+const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 export const generateAgriAdvice = async (
   prompt: string, 
   userContext: string
 ): Promise<string> => {
   try {
-    if (!process.env.API_KEY) {
-      return "Clé API manquante. Veuillez configurer votre clé API Gemini.";
-    }
-
     const fullPrompt = `Context: User is a ${userContext}. \nQuestion: ${prompt}`;
 
     const response: GenerateContentResponse = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
+      model: 'gemini-3-flash-preview',
       contents: fullPrompt,
       config: {
         systemInstruction: SYSTEM_INSTRUCTION_AI,
@@ -28,6 +24,10 @@ export const generateAgriAdvice = async (
     return response.text || "Désolé, je n'ai pas pu générer de conseil pour le moment.";
   } catch (error) {
     console.error("Error calling Gemini API:", error);
-    return "Une erreur est survenue lors de la connexion à l'IA.";
+    // Graceful error handling for UI feedback
+    if (error instanceof Error && error.message.includes("API_KEY")) {
+       return "Erreur de configuration : Clé API non valide.";
+    }
+    return "Une erreur est survenue lors de la connexion à l'IA Agri-Expert.";
   }
 };
