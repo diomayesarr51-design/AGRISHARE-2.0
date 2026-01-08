@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import Navigation from './components/Navigation';
 import Marketplace from './components/Marketplace';
@@ -19,27 +20,22 @@ const App: React.FC = () => {
   const [userType, setUserType] = useState<UserType>(UserType.CONSUMER);
   const [activeOrderId, setActiveOrderId] = useState<string | null>(null);
   
-  const [registrationIdentifier, setRegistrationIdentifier] = useState<string>('');
+  // Auth State
   const [authUser, setAuthUser] = useState<AuthUser | null>(null);
   const [isAuthChecking, setIsAuthChecking] = useState(true);
 
   useEffect(() => {
     const checkSession = async () => {
+      setIsAuthChecking(true);
       try {
         const user = await authService.autoLogin();
         if (user) {
-          setAuthUser(user);
-          setUserType(user.type);
-          // Auto-redirect if already logged in
-          if (user.type === UserType.FARMER) setCurrentView('farmer-dashboard');
-          else if (user.type === UserType.INVESTOR) setCurrentView('investor-dashboard');
-          else setCurrentView('marketplace');
+          handleLoginSuccess(user);
         }
       } catch (e) {
         console.error("Auto login failed", e);
       } finally {
-        // Ensure we stop the loading state regardless of outcome
-        setTimeout(() => setIsAuthChecking(false), 500);
+        setIsAuthChecking(false);
       }
     };
 
@@ -49,9 +45,14 @@ const App: React.FC = () => {
   const handleLoginSuccess = (user: AuthUser) => {
     setAuthUser(user);
     setUserType(user.type);
-    if (user.type === UserType.FARMER) setCurrentView('farmer-dashboard');
-    else if (user.type === UserType.INVESTOR) setCurrentView('investor-dashboard');
-    else setCurrentView('marketplace');
+    
+    if (user.type === UserType.FARMER) {
+      setCurrentView('farmer-dashboard');
+    } else if (user.type === UserType.INVESTOR) {
+      setCurrentView('investor-dashboard');
+    } else {
+      setCurrentView('marketplace');
+    }
   };
 
   const handleLogout = () => {
@@ -71,7 +72,7 @@ const App: React.FC = () => {
       <div className="min-h-screen bg-agri-dark flex flex-col items-center justify-center text-white">
          <Sprout size={64} className="text-senegal-yellow animate-bounce mb-4" />
          <h1 className="text-2xl font-bold tracking-tight">AgriShare SN</h1>
-         <p className="text-green-200 mt-2 text-sm animate-pulse">Chargement sécurisé...</p>
+         <p className="text-green-200 mt-2 text-sm animate-pulse">Chargement de votre espace...</p>
       </div>
     );
   }
@@ -79,14 +80,14 @@ const App: React.FC = () => {
   const renderContent = () => {
     if (currentView === 'landing') return <LandingPage onStart={() => setCurrentView('welcome')} onLogin={() => setCurrentView('login')} />;
     if (currentView === 'welcome') return <WelcomeScreen onNavigateToLogin={() => setCurrentView('login')} onNavigateToRegister={(role) => { setUserType(role); setCurrentView('login'); }} />;
-    if (currentView === 'login') return <LoginScreen userType={userType} onLoginSuccess={handleLoginSuccess} onNavigateToWelcome={() => setCurrentView('welcome')} onNavigateToRegister={(id) => { setRegistrationIdentifier(id); setCurrentView('register'); }} />;
-    if (currentView === 'register') return <RegistrationScreen userType={userType} phoneOrEmail={registrationIdentifier} onRegistrationComplete={handleLoginSuccess} onBack={() => setCurrentView('login')} />;
+    if (currentView === 'login') return <LoginScreen userType={userType} onLoginSuccess={handleLoginSuccess} onNavigateToWelcome={() => setCurrentView('welcome')} onNavigateToRegister={() => setCurrentView('register')} />;
+    if (currentView === 'register') return <RegistrationScreen userType={userType} phoneOrEmail="" onRegistrationComplete={handleLoginSuccess} onBack={() => setCurrentView('login')} />;
 
     switch (currentView) {
       case 'home': return <Home onNavigate={setCurrentView} onUserSwitch={setUserType} />;
       case 'marketplace': return <Marketplace onOrderPlaced={handleOrderPlaced} />;
-      case 'farmer-dashboard': return authUser?.type === UserType.FARMER ? <FarmerDashboard /> : <Marketplace onOrderPlaced={handleOrderPlaced} />;
-      case 'investor-dashboard': return authUser?.type === UserType.INVESTOR ? <InvestorDashboard /> : <Marketplace onOrderPlaced={handleOrderPlaced} />;
+      case 'farmer-dashboard': return <FarmerDashboard />;
+      case 'investor-dashboard': return <InvestorDashboard />;
       case 'ai-assistant': return <AIAssistant userType={userType} />;
       case 'order-tracking': return activeOrderId ? <OrderTracking orderId={activeOrderId} onBack={() => setCurrentView('marketplace')} /> : <Marketplace onOrderPlaced={handleOrderPlaced} />;
       default: return <Home onNavigate={setCurrentView} onUserSwitch={setUserType} />;
@@ -96,7 +97,7 @@ const App: React.FC = () => {
   const isAuthFlow = ['landing', 'welcome', 'login', 'register'].includes(currentView);
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="min-h-screen bg-gray-50 font-sans text-gray-900">
       {!isAuthFlow && (
         <Navigation 
           currentUserType={userType} 
@@ -107,14 +108,9 @@ const App: React.FC = () => {
           onLogout={handleLogout}
         />
       )}
-      <main className={`${!isAuthFlow ? 'flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8' : 'flex-1'}`}>
+      <main className={!isAuthFlow ? "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8" : ""}>
         {renderContent()}
       </main>
-      {!isAuthFlow && (
-        <footer className="bg-white border-t border-gray-200 mt-auto py-8 text-center text-gray-500 text-sm">
-          <p>© 2024 AgriShare Senegal. Tous droits réservés.</p>
-        </footer>
-      )}
     </div>
   );
 };
