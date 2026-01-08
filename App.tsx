@@ -80,7 +80,7 @@ const App: React.FC = () => {
   const renderContent = () => {
     if (currentView === 'landing') return <LandingPage onStart={() => setCurrentView('welcome')} onLogin={() => setCurrentView('login')} />;
     if (currentView === 'welcome') return <WelcomeScreen onNavigateToLogin={() => setCurrentView('login')} onNavigateToRegister={(role) => { setUserType(role); setCurrentView('login'); }} />;
-    if (currentView === 'login') return <LoginScreen userType={userType} onLoginSuccess={handleLoginSuccess} onNavigateToWelcome={() => setCurrentView('welcome')} onNavigateToRegister={() => setCurrentView('register')} />;
+    if (currentView === 'login') return <LoginScreen userType={userType} onLoginSuccess={handleLoginSuccess} onNavigateToWelcome={() => setCurrentView('welcome')} onNavigateToRegister={(id) => setCurrentView('register')} />;
     if (currentView === 'register') return <RegistrationScreen userType={userType} phoneOrEmail="" onRegistrationComplete={handleLoginSuccess} onBack={() => setCurrentView('login')} />;
 
     switch (currentView) {

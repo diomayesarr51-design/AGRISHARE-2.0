@@ -5,10 +5,9 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   plugins: [react()],
   define: {
-    // On définit uniquement la clé nécessaire pour le SDK Google GenAI
-    'process.env.API_KEY': JSON.stringify(process.env.API_KEY || ''),
-    // Fournit un objet global minimal pour éviter "process is not defined"
-    'process.env': '{}'
+    // Injection sécurisée de la clé API. 
+    // Vite remplacera 'process.env.API_KEY' par la valeur réelle lors de la compilation.
+    'process.env.API_KEY': JSON.stringify(process.env.API_KEY || '')
   },
   build: {
     outDir: 'dist',
@@ -21,4 +20,7 @@ export default defineConfig({
       },
     },
   },
+  server: {
+    port: 3000
+  }
 });
